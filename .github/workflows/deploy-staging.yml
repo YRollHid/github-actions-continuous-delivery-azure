@@ -5,7 +5,7 @@ on:
     types: [labeled]
 
 env:
-  DOCKER_IMAGE_NAME: YRollHid-az-ttt
+  DOCKER_IMAGE_NAME: Azure/YRollHid-azure-ttt
   IMAGE_REGISTRY_URL: docker.pkg.github.com
   #################################################
   ### USER PROVIDED VALUES ARE REQUIRED BELOW   ###
@@ -45,12 +45,14 @@ jobs:
         with:
           name: webpack artifacts
           path: public
-
-      - name: create image and store in Packages
-        uses: mattdavis0351/actions/docker-gpr@1.3.0
+      
+      - name: Create image and store in Packages
+        uses: docker/build-push-action@v2
         with:
-          repo-token: ${{secrets.GITHUB_TOKEN}}
-          image-name: ${{env.DOCKER_IMAGE_NAME}}
+          push: true
+          tags: ${{env.DOCKER_IMAGE_NAME}}
+          secrets: |
+            GIT_AUTH_TOKEN=${{secrets.GITHUB_TOKEN}}
 
   Deploy-to-Azure:
     runs-on: ubuntu-latest
